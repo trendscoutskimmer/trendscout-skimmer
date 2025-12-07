@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TrendScout Skimmer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+  <div class="ts-app">
+
+    <!-- Header -->
+    <header class="ts-header">
+      <div class="ts-logo-wrap">
+        <div class="ts-logo-badge">
+          <span class="ts-logo-initials">TS</span>
+        </div>
+        <div class="ts-title-block">
+          <h1 class="ts-title">TrendScout Skimmer</h1>
+          <p class="ts-subtitle">
+            Tracks viral TikTok Shop products so you can ride the wave before it crashes.
+            <span class="ts-subtitle-link">Refresh page after updating Google Sheets.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="ts-header-tags">
+        <span class="ts-pill ts-pill-live"><span class="ts-dot"></span> Live TikTok Product Radar</span>
+        <span class="ts-pill ts-pill-agent">Agent-scored by TrendScout</span>
+      </div>
+    </header>
+
+    <!-- Controls -->
+    <section class="ts-controls">
+      <div class="ts-search-wrap">
+        <label for="search-input" class="ts-search-label">Search by name or category…</label>
+        <div class="ts-search-inner">
+          <span class="ts-search-icon">🔍</span>
+          <input id="search-input" type="text" placeholder="Car Phone Holder, Pets, Beauty…" autocomplete="off" />
+          <button id="clear-search" class="ts-clear-btn" type="button">Clear</button>
+        </div>
+      </div>
+
+      <div class="ts-sort-helper">
+        <button id="sort-payout-btn" class="ts-helper-pill" type="button">Sort by payout score</button>
+        <button id="sort-virality-btn" class="ts-helper-pill" type="button">Sort by virality</button>
+        <span class="ts-helper-text">Or click any column header to sort.</span>
+      </div>
+    </section>
+
+    <!-- Main Table -->
+    <main class="ts-table-shell">
+      <div class="ts-table-card">
+        <div class="ts-table-meta">
+          <span id="product-count" class="ts-table-count">0 products</span>
+          <span id="active-sort-label" class="ts-table-sort-label">Sorted by Agent Score (desc)</span>
+        </div>
+
+        <div class="ts-table-scroll">
+          <table id="product-table">
+            <thead>
+              <tr>
+                <th class="col-name" data-sort-key="name" data-type="string">
+                  Name <span class="ts-th-badge">CATEGORY</span>
+                  <span class="ts-sort-indicator"></span>
+                </th>
+                <th data-sort-key="price" data-type="number">Price <span class="ts-sort-indicator"></span></th>
+                <th data-sort-key="commission" data-type="number">Commission % <span class="ts-sort-indicator"></span></th>
+                <th data-sort-key="agentScore" data-type="number" class="is-active-sort desc">Agent Score <span class="ts-sort-indicator"></span></th>
+                <th data-sort-key="virality" data-type="number">Virality <span class="ts-sort-indicator"></span></th>
+                <th data-sort-key="views7d" data-type="number">7-Day Views <span class="ts-sort-indicator"></span></th>
+                <th data-sort-key="rating" data-type="number">Rating <span class="ts-sort-indicator"></span></th>
+                <th class="col-links">Links</th>
+              </tr>
+            </thead>
+            <tbody id="product-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <footer class="ts-footer">
+      <span>TrendScoutAI · TikTok Neon Edition</span>
+      <span class="ts-footer-dot">•</span>
+      <span>Data source: TikTok Shop / Google Sheets / API</span>
+    </footer>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
+
