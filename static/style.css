@@ -479,6 +479,16 @@ th.is-active-sort.desc .ts-sort-indicator::before {
   align-items: center;
 }
 
+.ts-footer-link {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.ts-footer-link:hover {
+  color: #e5e7eb;
+  text-decoration: underline;
+}
+
 .ts-footer-dot {
   opacity: 0.6;
 }
