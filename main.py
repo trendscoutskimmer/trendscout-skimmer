@@ -59,22 +59,32 @@ def get_db() -> Session:
 
 app = FastAPI()
 
+# Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-@app.get("/terms", response_class=HTMLResponse)
-async def terms(request: Request):
-    return templates.TemplateResponse("tos.html", {"request": request})
 
-@app.get("/privacy", response_class=HTMLResponse)
-async def privacy(request: Request):
-    return templates.TemplateResponse("privacy.html", {"request": request})
-
+# ---------- PAGES ----------
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
+    """Main dashboard page."""
     return templates.TemplateResponse("index.html", {"request": request})
 
+
+@app.get("/terms", response_class=HTMLResponse)
+async def terms(request: Request):
+    """Terms of Service page."""
+    return templates.TemplateResponse("tos.html", {"request": request})
+
+
+@app.get("/privacy", response_class=HTMLResponse)
+async def privacy(request: Request):
+    """Privacy Policy page."""
+    return templates.TemplateResponse("privacy.html", {"request": request})
+
+
+# ---------- API ----------
 
 @app.get("/api/products")
 def list_products(limit: int = 100):
