@@ -27,7 +27,7 @@
         <div class="ts-title-block">
           <h1 class="ts-title">TrendScout Skimmer</h1>
           <p class="ts-subtitle">
-            Tracks viral TikTok Shop products so you can ride the wave before it crashes.
+            Tracks viral TikTok products from your sheet so you can ride the wave before it crashes.
             <span class="ts-subtitle-link">Refresh page after updating Google Sheets.</span>
           </p>
         </div>
@@ -51,9 +51,12 @@
       </div>
 
       <div class="ts-sort-helper">
-        <button id="sort-payout-btn" class="ts-helper-pill" type="button">Sort by payout score</button>
-        <button id="sort-virality-btn" class="ts-helper-pill" type="button">Sort by virality</button>
-        <span class="ts-helper-text">Or click any column header to sort.</span>
+        <button id="sort-payout-btn" class="ts-helper-pill" type="button">
+          Sort by payout or virality — click any header
+        </button>
+        <button id="sort-virality-btn" class="ts-helper-pill ts-helper-pill-ghost" type="button">
+          Agent score blends commission, virality & 7-day views
+        </button>
       </div>
     </section>
 
@@ -70,7 +73,7 @@
             <thead>
               <tr>
                 <th class="col-name" data-sort-key="name" data-type="string">
-                  Name <span class="ts-th-badge">CATEGORY</span>
+                  Name <span class="ts-th-badge">Category</span>
                   <span class="ts-sort-indicator"></span>
                 </th>
                 <th data-sort-key="price" data-type="number">Price <span class="ts-sort-indicator"></span></th>
