@@ -16,3 +16,16 @@ downloads/
 
 # local databases
 *.db
+
+# secrets
+.env
+
+# local junk
+.DS_Store
+__pycache__/
+*.pyc
+venv/
+
+# browser profiles / automation
+chrome_profile/
+user-data/
