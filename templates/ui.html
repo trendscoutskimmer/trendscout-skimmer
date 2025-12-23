@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Viral Auditor</title>
+  <style>
+    :root{
+      --bg0:#061015; --bg1:#07161c; --border:rgba(255,255,255,.08);
+      --muted:rgba(255,255,255,.65); --text:rgba(255,255,255,.92);
+      --accent:#00d18f; --accent2:#38bdf8; --bad:#ff5c5c; --warn:#fbbf24;
+      --shadow: 0 10px 30px rgba(0,0,0,.35); --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:var(--sans); color:var(--text);
+      background: radial-gradient(900px 600px at 20% 10%, rgba(56,189,248,.10), transparent 60%),
+                  radial-gradient(900px 600px at 80% 15%, rgba(0,209,143,.10), transparent 60%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1));
+      min-height:100vh;
+    }
+    a{ color: var(--accent2); text-decoration:none }
+    a:hover{ text-decoration:underline }
+    .wrap{ max-width:1100px; margin:0 auto; padding:22px 18px 50px; }
+    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .logo{ width:38px;height:38px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(0,209,143,.95), rgba(56,189,248,.95));
+      box-shadow: var(--shadow);
+    }
+    .brand h1{ font-size:18px; margin:0; letter-spacing:.2px; }
+    .brand .sub{ font-size:12px; color:var(--muted); margin-top:2px; }
+    .actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .btn{
+      border:1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text);
+      padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:600;
+      display:inline-flex; align-items:center; gap:8px;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+    }
+    .btn:hover{ background: rgba(255,255,255,.06) }
+    .btn:active{ transform: translateY(1px) }
+    .btn.primary{ border-color: rgba(0,209,143,.35); background: rgba(0,209,143,.12); }
+    .btn.primary:hover{ background: rgba(0,209,143,.16) }
+    .pill{
+      border:1px solid var(--border); background: rgba(255,255,255,.04);
+      padding:8px 10px; border-radius:999px; font-size:12px; color: var(--muted);
+      display:flex; align-items:center; gap:8px;
+    }
+    .dot{ width:8px; height:8px; border-radius:50%; background: rgba(255,255,255,.25) }
+    .dot.ok{ background: rgba(0,209,143,.9) } .dot.bad{ background: rgba(255,92,92,.95) }
+
+    .grid{ display:grid; grid-template-columns: 1.2fr .8fr; gap:14px; align-items:start; }
+    @media (max-width: 980px){ .grid{ grid-template-columns:1fr } }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow:hidden;
+    }
+    .hd{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      padding:16px 16px 10px; border-bottom:1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.02);
+    }
+    .hd h2{ margin:0; font-size:14px; letter-spacing:.2px; }
+    .hd p{ margin:6px 0 0; font-size:12px; color:var(--muted); }
+    .bd{ padding:16px; }
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+    input, textarea{
+      width:100%; border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18);
+      color: var(--text); padding:10px 12px; border-radius:12px; outline:none; font-size:14px;
+    }
+    textarea{ min-height:140px; resize: vertical; font-family: var(--sans); }
+    input::placeholder, textarea::placeholder{ color: rgba(255,255,255,.35) }
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    @media (max-width: 640px){ .row{ grid-template-columns:1fr } }
+    .hr{ height:1px; background: rgba(255,255,255,.06); margin:14px 0; }
+    .muted{ color: var(--muted); font-size:12px; }
+    .mono{
+      font-family: var(--mono); font-size:12px; color: rgba(255,255,255,.86);
+      white-space:pre-wrap; word-break:break-word; background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.06); padding:12px; border-radius:14px;
+    }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+    .chip{ font-size:12px; padding:7px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.16); color: rgba(255,255,255,.85);
+    }
+    .scoreBig{ font-size:46px; font-weight:900; line-height:1; margin:0; }
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.10);
+      padding:10px 12px; border-radius:12px; color: rgba(255,255,255,.92);
+      font-size:13px; display:none; max-width:min(760px, 92vw); box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Viral Auditor</h1>
+          <div class="sub">Two tools only: Video Auditor + Auto Blog Generator</div>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="pill"><span id="apiDot" class="dot"></span><span id="apiStatus">Checking API…</span></div>
+        <a class="btn" href="/blog">Blog Posts</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Video Auditor -->
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>Video Auditor</h2>
+            <p>Paste a URL + optional transcript/description. Get a virality score + concrete fixes.</p>
+          </div>
+          <button class="btn primary" id="btnAudit">Run Audit</button>
+        </div>
+        <div class="bd">
+          <div class="row">
+            <div>
+              <label>Video URL (optional but recommended)</label>
+              <input id="url" type="text" placeholder="https://www.tiktok.com/@user/video/..." />
+            </div>
+            <div>
+              <label>Thumbnail URL (optional)</label>
+              <input id="thumb" type="text" placeholder="https://..." />
+            </div>
+            <div>
+              <label>Title (required)</label>
+              <input id="title" type="text" placeholder="Watch this stain vanish in 5 seconds…" />
+            </div>
+            <div>
+              <label>Description (optional)</label>
+              <input id="desc" type="text" placeholder="Caption / context…" />
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <label>Transcript (optional)</label>
+            <textarea id="transcript" placeholder="Paste transcript here (optional)"></textarea>
+            <div class="muted" style="margin-top:6px;">If you don’t have a transcript, leave it blank. The audit still works off title/description.</div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="row">
+            <div>
+              <div class="muted">Overall score</div>
+              <p class="scoreBig" id="score">—</p>
+              <div class="muted" id="verdict">Run an audit to get a verdict.</div>
+            </div>
+            <div>
+              <div class="muted">Subscores</div>
+              <div class="chips" style="margin-top:10px;">
+                <span class="chip" id="hook">Hook: —</span>
+                <span class="chip" id="pacing">Pacing: —</span>
+                <span class="chip" id="retention">Retention: —</span>
+                <span class="chip" id="nichefit">Niche fit: —</span>
+              </div>
+              <div class="muted" style="margin-top:10px;">Suggested hashtags</div>
+              <div class="chips" id="tags" style="margin-top:8px;"></div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="muted">Notes</div>
+          <div class="mono" id="notes">(none yet)</div>
+        </div>
+      </div>
+
+      <!-- Auto Blog -->
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>Auto Blog Generator</h2>
+            <p>Runs your existing pipeline: read videos sheet → visit link → transcribe → write → save to blog_posts → show on /blog.</p>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="muted" style="margin-bottom:10px;">
+            This uses your Google Sheets + yt-dlp + Whisper pipeline exactly as in <span style="font-family:var(--mono);">creator_blog_agent.py</span>.
+          </div>
+
+          <button class="btn primary" id="btnRunBlog">Run Blog Agent</button>
+          <button class="btn" id="btnOpenBlog" style="margin-left:8px;">Open Blog</button>
+
+          <div class="hr"></div>
+
+          <div class="muted">Run output</div>
+          <div class="mono" id="blogOut">Not run yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=>{ t.style.display="none"; }, 2600);
+    }
+
+    function setApiStatus(ok, text){
+      const dot = $("apiDot");
+      dot.className = "dot " + (ok ? "ok" : "bad");
+      $("apiStatus").textContent = text;
+    }
+
+    async function fetchJSON(url, opts){
+      const res = await fetch(url, { cache: "no-store", ...(opts||{}) });
+      if(!res.ok){
+        const txt = await res.text().catch(()=> "");
+        throw new Error(`${res.status} ${res.statusText} :: ${txt.slice(0,200)}`);
+      }
+      return res.json();
+    }
+
+    function renderAudit(a){
+      $("score").textContent = (a && typeof a.score === "number") ? Math.round(a.score) : "—";
+      $("verdict").textContent = a?.verdict || "—";
+      $("notes").textContent = a?.notes || "(no notes)";
+
+      $("hook").textContent = "Hook: " + (a?.hook_score ?? "—");
+      $("pacing").textContent = "Pacing: " + (a?.pacing_score ?? "—");
+      $("retention").textContent = "Retention: " + (a?.retention_score ?? "—");
+      $("nichefit").textContent = "Niche fit: " + (a?.niche_fit_score ?? "—");
+
+      const tags = $("tags");
+      tags.innerHTML = "";
+      (a?.hashtags || []).forEach(h=>{
+        const s = document.createElement("span");
+        s.className = "chip";
+        s.textContent = h;
+        tags.appendChild(s);
+      });
+    }
+
+    async function runAudit(){
+      const title = ($("title").value || "").trim();
+      if(!title){ toast("Title is required."); return; }
+
+      $("btnAudit").disabled = true;
+      $("btnAudit").textContent = "Auditing…";
+      try{
+        const payload = {
+          url: ($("url").value || "").trim() || null,
+          title,
+          description: ($("desc").value || "").trim() || null,
+          transcript: ($("transcript").value || "").trim() || null,
+          thumbnail_url: ($("thumb").value || "").trim() || null
+        };
+        const data = await fetchJSON("/audit", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+        renderAudit(data);
+        toast("Audit complete ✅");
+      }catch(e){
+        console.error(e);
+        toast("Audit failed. Check server logs.");
+      }finally{
+        $("btnAudit").disabled = false;
+        $("btnAudit").textContent = "Run Audit";
+      }
+    }
+
+    async function runBlog(){
+      $("btnRunBlog").disabled = true;
+      $("btnRunBlog").textContent = "Running…";
+      $("blogOut").textContent = "Running blog agent… (watch server logs too)";
+      try{
+        const data = await fetchJSON("/api/blog/run", { method: "POST" });
+        $("blogOut").textContent = JSON.stringify(data, null, 2);
+        toast("Blog agent finished ✅");
+      }catch(e){
+        console.error(e);
+        $("blogOut").textContent = String(e);
+        toast("Blog agent failed. Check logs.");
+      }finally{
+        $("btnRunBlog").disabled = false;
+        $("btnRunBlog").textContent = "Run Blog Agent";
+      }
+    }
+
+    async function apiHealth(){
+      try{
+        await fetchJSON("/health");
+        setApiStatus(true, "API online");
+      }catch(e){
+        setApiStatus(false, "API offline");
+      }
+    }
+
+    $("btnAudit").addEventListener("click", runAudit);
+    $("btnRunBlog").addEventListener("click", runBlog);
+    $("btnOpenBlog").addEventListener("click", ()=> window.location.href="/blog");
+
+    (async function init(){
+      await apiHealth();
+      renderAudit(null);
+    })();
+  </script>
+</body>
+</html>

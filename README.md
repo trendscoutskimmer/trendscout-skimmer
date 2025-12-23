@@ -1,2 +1,0 @@
-# trendscout-skimmer
-# trendscout-skimmer

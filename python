@@ -1,0 +1,40 @@
+import sys
+import subprocess
+from datetime import datetime
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
+STEPS = [
+    ("Scrape new videos (no duplicates)", "tiktok_agent.py"),
+    ("Analyze trends (niche + hashtag history)", "analyze_trends.py"),
+    ("Score videos (viral score + suggestions)", "score_agent.py"),
+    ("Enrich creators (followers/likes/profile)", "creator_insight_agent.py"),
+]
+
+def run_step(name: str, script: str):
+    script_path = BASE_DIR / script
+    if not script_path.exists():
+        raise FileNotFoundError(f"Missing file: {script_path}")
+
+    print("\n" + "=" * 70)
+    print(f"▶ {name}")
+    print("=" * 70)
+
+    start = datetime.now()
+    subprocess.run([sys.executable, str(script_path)], check=True)
+    end = datetime.now()
+
+    print(f"✅ Done: {name}  ({(end-start).seconds}s)")
+
+def main():
+    print("🚀 TrendScoutAI pipeline starting...")
+    for name, script in STEPS:
+        run_step(name, script)
+
+    print("\n🎉 Pipeline finished successfully.")
+    print("Next: refresh dashboard at http://127.0.0.1:8000/dashboard")
+
+if __name__ == "__main__":
+    main()
+

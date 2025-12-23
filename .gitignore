@@ -1,31 +1,37 @@
-
-# local junk
+# mac / python junk
 .DS_Store
 __pycache__/
 *.pyc
+*.pyo
 
-# virtual env
+# venv
 venv/
 
-# browser automation profiles / playwright / chrome
-chrome_profile/
-user-data/
-playwright/.cache/
-tmp/
-downloads/
-
-# local databases
-*.db
-
-# secrets
+# local env secrets
 .env
+.env.*
+*.env
 
-# local junk
-.DS_Store
-__pycache__/
-*.pyc
-venv/
-
-# browser profiles / automation
+# browser automation profiles
 chrome_profile/
 user-data/
+
+# data + logs + temp
+logs/
+_tmp/
+tmp_*/
+tmp/
+uploads/
+tmp_uploads/
+
+# local sqlite/db/csv/state
+*.db
+*.sqlite*
+*.csv
+*.json
+
+# credentials / keys
+service-account.json
+service_account.json
+*.pem
+*.key
