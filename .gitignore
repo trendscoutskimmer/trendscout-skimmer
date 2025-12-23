@@ -1,0 +1,18 @@
+
+# local junk
+.DS_Store
+__pycache__/
+*.pyc
+
+# virtual env
+venv/
+
+# browser automation profiles / playwright / chrome
+chrome_profile/
+user-data/
+playwright/.cache/
+tmp/
+downloads/
+
+# local databases
+*.db
