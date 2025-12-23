@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from scrape_tiktok import fetch_tiktok_products
+
 
 from sqlalchemy import (
     create_engine,
@@ -119,4 +121,20 @@ def list_products(limit: int = 100):
 
     finally:
         db.close()
+
+# ---------- TEST SCRAPER ROUTE ----------
+
+@app.get("/test-scrape")
+async def test_scrape():
+    """
+    Test endpoint to scrape one or more TikTok product URLs.
+    For now, it uses a hard-coded list of URLs.
+    """
+    # TODO: replace this with a real TikTok product URL you want to test
+    urls = [
+    "https://www.tiktok.com/shop/pdp/garment-steamer-drflash-portable-travel-iron-7-modes-lcd-90-handle/1729992615540134195?source=ecommerce_mall&enter_method=feed_list_tiktok_picks&first_entrance=homepage_hot&first_entrance_position=navigation_bar&first_entrance_tt_scene=seo"
+]
+
+    products = await fetch_tiktok_products(urls)
+    return {"products": products}
 
